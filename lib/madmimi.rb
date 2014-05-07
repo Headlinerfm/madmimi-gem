@@ -44,6 +44,7 @@ class MadMimi
   MEMBERSHIPS_PATH = '/audience_members/%email%/lists.xml'
   SUPPRESSED_SINCE_PATH = '/audience_members/suppressed_since/%timestamp%.txt'
   SUPPRESS_USER_PATH = ' /audience_members/%email%/suppress_email'
+  IS_SUPPRESSED_PATH = '/audience_members/%email%/is_suppressed'
   SEARCH_PATH = '/audience_members/search.xml'
 
   PROMOTIONS_PATH = '/promotions.xml'
@@ -52,6 +53,7 @@ class MadMimi
   MAILING_STATS_PATH = '/promotions/%promotion_id%/mailings/%mailing_id%.xml'
 
   MAILER_PATH = '/mailer'
+  TRANSACTIONAL_MAILING_STATUS_PATH = '/mailers/status/%transaction_id%'
   MAILER_TO_LIST_PATH = '/mailer/to_list'
   MAILER_TO_ALL_PATH = '/mailer/to_all'
   MAILER_STATUS_PATH = '/mailers/status'
@@ -116,6 +118,16 @@ class MadMimi
     do_request(SUPPRESS_USER_PATH.gsub('%email%', email), :post)
   end
 
+  def is_suppressed(email)
+    response = do_request(IS_SUPPRESSED_PATH.gsub('%email%', email), :get)
+    case response
+    when 'true'
+      true
+    when 'false', /does not exist/
+      false
+    end
+  end
+
   def audience_search(query_string, raw = false)
     request = do_request(SEARCH_PATH, :get, :raw => raw, :query => query_string)
     Crack::XML.parse(request)
@@ -168,6 +180,10 @@ class MadMimi
     else
       do_request(MAILER_PATH, :post, options, true)
     end
+  end
+
+  def transactional_mailing_status(transaction_id)
+    do_request(TRANSACTIONAL_MAILING_STATUS_PATH.gsub('%transaction_id%', transaction_id.to_s), :get)
   end
 
   def send_html(opt, html)
