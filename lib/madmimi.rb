@@ -36,6 +36,32 @@ require 'yaml'
 require 'crack'
 
 class MadMimi
+  extend Forwardable
+
+  class Config
+    MIMI_OPTS = [:raise_exceptions]
+    attr_accessor :raise_exceptions, :verify_ssl, :http_options
+    attr_reader :username, :api_key
+
+    def initialize(username, api_key, options = {})
+      @username = username
+      @api_key = api_key
+      options.reverse_merge!({
+        :verify_ssl => true
+      })
+      @raise_exceptions = options[:raise_exceptions]
+      @verify_ssl = options[:verify_ssl]
+      @http_options = options.reject { |k, v| MIMI_OPTS.include?(k) }
+    end
+
+    def verify_ssl?
+      verify_ssl
+    end
+    
+    def raise_exceptions?
+      raise_exceptions
+    end
+  end
 
   MadMimiError = Class.new(StandardError)
 
@@ -60,37 +86,11 @@ class MadMimi
     end
   )
 
+  def_delegators :@config, :username, :api_key, :raise_exceptions?, :raise_exceptions=,
+    :verify_ssl?, :verify_ssl=, :http_options, :http_options=
+
   def initialize(username, api_key, options = {})
-    @api_settings = options.reverse_merge({
-      :verify_ssl => true
-    }).merge({
-      :username   => username,
-      :api_key    => api_key
-    })
-  end
-
-  def username
-    @api_settings[:username]
-  end
-
-  def api_key
-    @api_settings[:api_key]
-  end
-
-  def raise_exceptions?
-    @api_settings[:raise_exceptions]
-  end
-
-  def raise_exceptions=(raise_exceptions)
-    @api_settings[:raise_exceptions] = raise_exceptions
-  end
-
-  def verify_ssl?
-    @api_settings[:verify_ssl]
-  end
-
-  def verify_ssl=(verify_ssl)
-    @api_settings[:verify_ssl] = verify_ssl
+    @config = Config.new(username, api_key, options)
   end
 
   # Audience and lists
@@ -329,9 +329,8 @@ class MadMimi
       :body => {
         :username => username,
         :api_key  => api_key
-      },
-      :verify => verify_ssl?
-    }
+      }
+    }.merge(http_options)
   end
 
   def extract_format(path)
