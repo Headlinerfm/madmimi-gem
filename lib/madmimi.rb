@@ -236,8 +236,7 @@ class MadMimi
     if transactional == true
       http = Net::HTTP.new(BASE_URL, 443)
       http.use_ssl = true
-      http.ssl_version = "SSLv23" if http.respond_to?(:ssl_version)
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      http.verify_mode = OpenSSL::SSL::VERIFY_PEER
       http.read_timeout = timeout
     else
       http = Net::HTTP.new(BASE_URL, 80)
