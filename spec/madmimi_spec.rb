@@ -921,7 +921,7 @@ describe MadMimi do
 
   context '#send_mail' do
     context 'when options are correct' do
-      let(:default_options) {
+      let(:mailer_options) {
         {
           :promotion_name => 'Transactional Promotion',
           :from => 'maxim+1@madmimi.com',
@@ -931,7 +931,7 @@ describe MadMimi do
 
       context 'when sending to list', :vcr => { :cassette_name => 'send_mail/send_to_list' } do
         subject {
-          mad_mimi.send_mail(default_options.merge(:list_name => 'list 1'), {})
+          mad_mimi.send_mail(mailer_options.merge(:list_name => 'list 1'), {})
         }
 
         it "returns mailing id" do
@@ -941,7 +941,7 @@ describe MadMimi do
 
       context 'when sending to all', :vcr => { :cassette_name => 'send_mail/send_to_all' } do
         subject {
-          mad_mimi.send_mail(default_options.merge(:to_all => true), {})
+          mad_mimi.send_mail(mailer_options.merge(:to_all => true), {})
         }
 
         it "returns mailing id" do
@@ -951,7 +951,7 @@ describe MadMimi do
 
       context 'when sending to single recipient', :vcr => { :cassette_name => 'send_mail/send_single' } do
         subject {
-          mad_mimi.send_mail(default_options.merge(:recipient => 'Test Example <test@example.com>'), {})
+          mad_mimi.send_mail(mailer_options.merge(:recipient => 'Test Example <test@example.com>'), {})
         }
 
         it "returns transaction id" do
@@ -980,7 +980,7 @@ describe MadMimi do
     let(:raw_html) { '<html><body>Test [[tracking_beacon]] [[opt_out]]</body></html>' }
 
     context 'when options are correct' do
-      let(:default_options) {
+      let(:mailer_options) {
         {
           :promotion_name => 'Transactional Promotion',
           :from => 'maxim+1@madmimi.com',
@@ -990,7 +990,7 @@ describe MadMimi do
 
       context 'when sending to list', :vcr => { :cassette_name => 'send_html/send_to_list' } do
         subject {
-          mad_mimi.send_html(default_options.merge(:list_name => 'list 1'), raw_html)
+          mad_mimi.send_html(mailer_options.merge(:list_name => 'list 1'), raw_html)
         }
 
         it "returns mailing id" do
@@ -1000,7 +1000,7 @@ describe MadMimi do
 
       context 'when sending to all', :vcr => { :cassette_name => 'send_html/send_to_all' } do
         subject {
-          mad_mimi.send_html(default_options.merge(:to_all => true), raw_html)
+          mad_mimi.send_html(mailer_options.merge(:to_all => true), raw_html)
         }
 
         it "returns mailing id" do
@@ -1010,7 +1010,7 @@ describe MadMimi do
 
       context 'when sending to single recipient', :vcr => { :cassette_name => 'send_html/send_single' } do
         subject {
-          mad_mimi.send_html(default_options.merge(:recipient => 'Test Example <test@example.com>'), raw_html)
+          mad_mimi.send_html(mailer_options.merge(:recipient => 'Test Example <test@example.com>'), raw_html)
         }
 
         it "returns transaction id" do
@@ -1073,7 +1073,7 @@ describe MadMimi do
     let(:plain_text) { 'Test [[tracking_beacon]] [[opt_out]]' }
 
     context 'when options are correct' do
-      let(:default_options) {
+      let(:mailer_options) {
         {
           :promotion_name => 'Transactional Promotion',
           :from => 'maxim+1@madmimi.com',
@@ -1083,7 +1083,7 @@ describe MadMimi do
 
       context 'when sending to list', :vcr => { :cassette_name => 'send_plaintext/send_to_list' } do
         subject {
-          mad_mimi.send_plaintext(default_options.merge(:list_name => 'list 1'), plain_text)
+          mad_mimi.send_plaintext(mailer_options.merge(:list_name => 'list 1'), plain_text)
         }
 
         it "returns mailing id" do
@@ -1093,7 +1093,7 @@ describe MadMimi do
 
       context 'when sending to all', :vcr => { :cassette_name => 'send_plaintext/send_to_all' } do
         subject {
-          mad_mimi.send_plaintext(default_options.merge(:to_all => true), plain_text)
+          mad_mimi.send_plaintext(mailer_options.merge(:to_all => true), plain_text)
         }
 
         it "returns mailing id" do
@@ -1103,7 +1103,7 @@ describe MadMimi do
 
       context 'when sending to single recipient', :vcr => { :cassette_name => 'send_plaintext/send_single' } do
         subject {
-          mad_mimi.send_plaintext(default_options.merge(:recipient => 'Test Example <test@example.com>'), plain_text)
+          mad_mimi.send_plaintext(mailer_options.merge(:recipient => 'Test Example <test@example.com>'), plain_text)
         }
 
         it "returns transaction id" do
