@@ -39,6 +39,25 @@ describe MadMimi do
         expect(subject.raise_exceptions?).to be_truthy
       end
     end
+
+    context 'changing initialization settings' do
+      let(:mad_mimi) { MadMimi.new('USERNAME', 'APIKEY', { raise_exceptions: false, verify_ssl: false }) }
+      subject { mad_mimi }
+      
+      context 'for raise_exceptions' do
+        before(:each) { mad_mimi.raise_exceptions = true }
+        it 'should change raise_exceptions to true' do
+          expect(subject.raise_exceptions?).to be_truthy
+        end
+      end
+
+      context 'for verify_ssl' do
+        before(:each) { mad_mimi.verify_ssl = true }
+        it 'should change verify_ssl to true' do
+          expect(subject.verify_ssl?).to be_truthy
+        end
+      end
+    end
   end
 
   context '#lists', :vcr => { :cassette_name => 'lists' } do
